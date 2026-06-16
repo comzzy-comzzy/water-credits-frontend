@@ -25,21 +25,10 @@ export class AuthService {
     try {
       const wallet = await this.walletService.connect();
       if (!wallet) return false;
-
-      // 1. Get challenge
       const { challenge } = await this.apiService.post<{ challenge: string }>('/auth/challenge', { wallet });
-
-      // 2. Sign challenge
       const signature = await this.walletService.signChallenge(challenge);
       if (!signature) return false;
-
-      // 3. Login
-      const { token, user } = await this.apiService.post<{ token: string; user: any }>('/auth/login', {
-        wallet,
-        signature,
-        challenge
-      });
-
+      const { token, user } = await this.apiService.post<{ token: string; user: any }>('/auth/login', { wallet, signature, challenge });
       localStorage.setItem('token', token);
       this.userSubject.next(user);
       return true;
@@ -47,6 +36,18 @@ export class AuthService {
       console.error('Login failed:', error);
       return false;
     }
+  }
+
+  async requestChallenge(wallet: string): Promise<{ challenge: string }> {
+    return this.apiService.post<{ challenge: string }>('/auth/challenge', { wallet });
+  }
+
+  async loginWithCreds(wallet: string, signature: string, challenge: string): Promise<{ token: string; user: any }> {
+    return this.apiService.post<{ token: string; user: any }>('/auth/login', { wallet, signature, challenge });
+  }
+
+  async register(wallet: string, email?: string, displayName?: string): Promise<{ token: string; user: any }> {
+    return this.apiService.post<{ token: string; user: any }>('/auth/register', { wallet, email, displayName });
   }
 
   logout(): void {
@@ -62,6 +63,10 @@ export class AuthService {
     } catch (error) {
       this.logout();
     }
+  }
+
+  async getCurrentUser(): Promise<any> {
+    return this.apiService.get<any>('/users/me');
   }
 
   isLoggedIn(): boolean {
