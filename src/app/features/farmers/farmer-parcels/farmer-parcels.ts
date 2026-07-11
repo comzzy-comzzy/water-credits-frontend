@@ -204,7 +204,7 @@ import {
           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4"
         >
           <div
-            *ngFor="let parcel of parcels"
+            *ngFor="let parcel of parcels; trackBy: trackByParcel"
             (click)="goToParcel(parcel)"
             class="card p-5 cursor-pointer hover:shadow-lg transition-shadow"
           >
@@ -320,6 +320,10 @@ export class FarmerParcelsComponent implements OnInit, OnDestroy {
 
   goToParcel(parcel: Project): void {
     this.router.navigate(['/projects', parcel.id]);
+  }
+
+  trackByParcel(_index: number, parcel: Project): string {
+    return parcel.id;
   }
 
   async saveParcel(): Promise<void> {

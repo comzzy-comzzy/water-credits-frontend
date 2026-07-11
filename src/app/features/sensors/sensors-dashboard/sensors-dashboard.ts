@@ -72,7 +72,7 @@ const STATUS_THRESHOLDS: Record<string, { good: [number, number]; warning: [numb
 
       <ng-container *ngIf="!loading">
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-          <div *ngFor="let param of parameterConfigs" class="card p-4">
+          <div *ngFor="let param of parameterConfigs; trackBy: trackByParam" class="card p-4">
             <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-2">
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center" [style.background]="param.color + '20'">
@@ -117,7 +117,7 @@ const STATUS_THRESHOLDS: Record<string, { good: [number, number]; warning: [numb
               No readings available
             </div>
             <div *ngIf="latestReading" class="space-y-3">
-              <div *ngFor="let param of parameterConfigs" class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
+              <div *ngFor="let param of parameterConfigs; trackBy: trackByParam" class="flex items-center justify-between py-2 border-b border-slate-100 dark:border-slate-700 last:border-0">
                 <div class="flex items-center gap-2">
                   <div class="w-6 h-6 rounded flex items-center justify-center" [style.background]="param.color + '20'">
                     <lucide-angular [img]="param.icon" class="w-3 h-3" [style.color]="param.color"></lucide-angular>
@@ -301,5 +301,9 @@ export class SensorsDashboardComponent implements OnInit, OnDestroy {
     if (value >= goodMin && value <= goodMax) return 'bg-green-500';
     if (value >= warnMin && value <= warnMax) return 'bg-yellow-500';
     return 'bg-red-500';
+  }
+
+  protected trackByParam(_index: number, param: ParameterConfig): string {
+    return param.key;
   }
 }

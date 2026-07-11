@@ -89,7 +89,7 @@ export interface ColumnDef {
             </ng-container>
             <ng-container *ngIf="!loading && data.length > 0">
               <tr
-                *ngFor="let row of data; let i = index"
+                *ngFor="let row of data; let i = index; trackBy: trackByRow"
                 (click)="rowClick.emit(row)"
                 [ngClass]="{
                   'cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-700/50': rowClick.observed,
@@ -154,5 +154,9 @@ export class DataTableComponent {
 
   getNestedValue(obj: any, path: string): any {
     return path.split('.').reduce((current, key) => current?.[key], obj);
+  }
+
+  trackByRow(index: number, row: Record<string, unknown>): string {
+    return row?.['id'] as string ?? String(index);
   }
 }
