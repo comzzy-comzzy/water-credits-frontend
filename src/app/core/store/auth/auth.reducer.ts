@@ -1,6 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as AuthActions from './auth.actions';
 import { User } from '../../models/user.model';
+import { STORAGE_KEYS } from '../../constants/app.constants';
 
 export interface AuthState {
   user: User | null;
@@ -11,7 +12,7 @@ export interface AuthState {
 
 export const initialState: AuthState = {
   user: null,
-  token: localStorage.getItem('token'),
+  token: localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN),
   loading: false,
   error: null,
 };

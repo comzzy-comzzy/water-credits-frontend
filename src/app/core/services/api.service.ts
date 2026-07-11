@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { environment } from '../../../environments/environment';
+import { STORAGE_KEYS } from '../constants/app.constants';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class ApiService {
     // Request interceptor for JWT
     this.axiosInstance.interceptors.request.use(
       (config) => {
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
         if (token && config.headers) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -33,8 +34,7 @@ export class ApiService {
       (response) => response,
       (error) => {
         if (error.response?.status === 401) {
-          // Handle unauthorized (e.g., redirect to login)
-          localStorage.removeItem('token');
+          localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
         }
         return Promise.reject(this.handleError(error));
       }

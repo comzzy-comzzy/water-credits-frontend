@@ -3,6 +3,7 @@ import { ApiService } from './api.service';
 import { WalletService } from './wallet.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
+import { STORAGE_KEYS } from '../constants/app.constants';
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,7 @@ export class AuthService {
     private apiService: ApiService,
     private walletService: WalletService,
   ) {
-    const savedToken = localStorage.getItem('token');
+    const savedToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (savedToken) {
       this.fetchCurrentUser();
     }
@@ -34,7 +35,7 @@ export class AuthService {
         '/auth/login',
         { wallet, signature, challenge },
       );
-      localStorage.setItem('token', token);
+      localStorage.setItem(STORAGE_KEYS.AUTH_TOKEN, token);
       this.userSubject.next(user);
       return true;
     } catch (error) {
@@ -72,7 +73,7 @@ export class AuthService {
   }
 
   logout(): void {
-    localStorage.removeItem('token');
+    localStorage.removeItem(STORAGE_KEYS.AUTH_TOKEN);
     this.userSubject.next(null);
     this.walletService.disconnect();
   }
@@ -91,10 +92,10 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   }
 
   getToken(): string | null {
-    return localStorage.getItem('token');
+    return localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
   }
 }
