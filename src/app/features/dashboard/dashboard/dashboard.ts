@@ -7,6 +7,7 @@ import { AnalyticsService } from '../../../core/services/analytics.service';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { AnalyticsOverview, CreditsOverTimePoint } from '../../../core/models/analytics.model';
 import { LucideAngularModule, Droplets, Leaf, Coins, TrendingUp, Activity, AlertTriangle } from 'lucide-angular';
+import { LoggingService } from '../../../core/services/logging.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -136,6 +137,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   constructor(
     private analyticsService: AnalyticsService,
     private wsService: WebsocketService,
+    private loggingService: LoggingService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -162,7 +164,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.overview = overview;
       this.creditsOverTime = creditsOverTime;
     } catch (error) {
-      console.error('Failed to load dashboard data:', error);
+      this.loggingService.error('Failed to load dashboard data:', error);
     } finally {
       this.loading = false;
     }

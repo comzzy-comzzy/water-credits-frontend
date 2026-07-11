@@ -10,6 +10,7 @@ import { ProjectsService } from '../../../core/services/projects.service';
 import { AnalyticsOverview } from '../../../core/models/analytics.model';
 import { Project } from '../../../core/models/project.model';
 import { LucideAngularModule, Droplets, MapPin, Leaf, Coins, TrendingUp, ArrowRight, Sprout, Wheat, Trees } from 'lucide-angular';
+import { LoggingService } from '../../../core/services/logging.service';
 
 @Component({
   selector: 'app-farmer-dashboard',
@@ -177,6 +178,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
   constructor(
     private analyticsService: AnalyticsService,
     private projectsService: ProjectsService,
+    private loggingService: LoggingService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -216,7 +218,7 @@ export class FarmerDashboardComponent implements OnInit, OnDestroy {
         { name: 'Compost Application', enrolled: false, estimatedCredits: 95 },
       ];
     } catch (error) {
-      console.error('Failed to load farmer dashboard data:', error);
+      this.loggingService.error('Failed to load farmer dashboard data:', error);
     } finally {
       this.loading = false;
     }

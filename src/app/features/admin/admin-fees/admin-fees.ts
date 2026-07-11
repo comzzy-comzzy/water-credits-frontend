@@ -6,6 +6,7 @@ import { NotificationService } from '../../../core/services/notification.service
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner';
 import { GovernanceConfig } from '../../../core/models/proposal.model';
 import { LucideAngularModule, Save, RotateCcw, Settings } from 'lucide-angular';
+import { getErrorMessage } from '../../../core/utils/error.utils';
 
 @Component({
   selector: 'app-admin-fees',
@@ -246,8 +247,7 @@ export class AdminFeesComponent implements OnInit {
       );
       await this.loadConfig();
     } catch (error) {
-      console.error('Failed to save config:', error);
-      this.notification.error('Save Failed', 'Could not update configuration. Please try again.');
+      this.notification.error('Save Failed', getErrorMessage(error, 'Could not update configuration. Please try again.'));
     } finally {
       this.saving = false;
     }
@@ -258,8 +258,7 @@ export class AdminFeesComponent implements OnInit {
       this.currentConfig = await this.governanceService.getConfig();
       this.resetForm();
     } catch (error) {
-      console.error('Failed to load config:', error);
-      this.notification.error('Load Failed', 'Could not load governance configuration.');
+      this.notification.error('Load Failed', getErrorMessage(error, 'Could not load governance configuration.'));
     } finally {
       this.loading = false;
     }

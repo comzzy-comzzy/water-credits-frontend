@@ -11,6 +11,8 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { AnalyticsOverview } from '../../../core/models/analytics.model';
 import { OracleSubmission } from '../../../core/models/oracle.model';
 import { LucideAngularModule, Users, Building2, HardDrive, RefreshCw, Activity, ArrowRight, Clock, ShieldCheck, Settings } from 'lucide-angular';
+import { getErrorMessage } from '../../../core/utils/error.utils';
+import { LoggingService } from '../../../core/services/logging.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -199,6 +201,7 @@ export class AdminDashboardComponent implements OnInit {
   constructor(
     private analyticsService: AnalyticsService,
     private oracleService: OracleService,
+    private loggingService: LoggingService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -210,7 +213,7 @@ export class AdminDashboardComponent implements OnInit {
     try {
       this.overview = await this.analyticsService.getOverview();
     } catch (error) {
-      console.error('Failed to load analytics overview:', error);
+      this.loggingService.error('Failed to load analytics overview:', error);
     }
   }
 
@@ -220,7 +223,7 @@ export class AdminDashboardComponent implements OnInit {
       const res = await this.oracleService.getSubmissions({ limit: 5 });
       this.recentSubmissions = res.data;
     } catch (error) {
-      console.error('Failed to load submissions:', error);
+      this.loggingService.error('Failed to load submissions:', error);
     } finally {
       this.submissionsLoading = false;
     }

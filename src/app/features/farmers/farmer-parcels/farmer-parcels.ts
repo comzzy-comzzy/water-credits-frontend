@@ -8,6 +8,7 @@ import { EmptyStateComponent } from '../../../shared/components/empty-state/empt
 import { NotificationService } from '../../../core/services/notification.service';
 import { ProjectsService } from '../../../core/services/projects.service';
 import { Project, ProjectCreate } from '../../../core/models/project.model';
+import { LoggingService } from '../../../core/services/logging.service';
 import {
   LucideAngularModule,
   Plus,
@@ -293,6 +294,7 @@ export class FarmerParcelsComponent implements OnInit, OnDestroy {
   constructor(
     private projectsService: ProjectsService,
     private notificationService: NotificationService,
+    private loggingService: LoggingService,
     private router: Router,
   ) {}
 
@@ -310,7 +312,7 @@ export class FarmerParcelsComponent implements OnInit, OnDestroy {
       const result = await this.projectsService.getProjects({ limit: 100 });
       this.parcels = result.data || [];
     } catch (error) {
-      console.error('Failed to load parcels:', error);
+      this.loggingService.error('Failed to load parcels:', error);
     } finally {
       this.loading = false;
     }

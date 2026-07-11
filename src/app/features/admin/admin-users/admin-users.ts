@@ -10,6 +10,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { User, UserRole } from '../../../core/models/user.model';
 import { LucideAngularModule, Trash2, Shield, Users } from 'lucide-angular';
+import { getErrorMessage } from '../../../core/utils/error.utils';
 
 @Component({
   selector: 'app-admin-users',
@@ -162,8 +163,7 @@ export class AdminUsersComponent implements OnInit {
         `${user.displayName || user.wallet}'s role changed to ${role}.`,
       );
     } catch (error) {
-      console.error('Failed to update role:', error);
-      this.notification.error('Update Failed', 'Could not update user role.');
+      this.notification.error('Update Failed', getErrorMessage(error, 'Could not update user role.'));
     }
   }
 
@@ -177,8 +177,7 @@ export class AdminUsersComponent implements OnInit {
         `KYC status for ${user.displayName || user.wallet} set to ${newValue ? 'verified' : 'unverified'}.`,
       );
     } catch (error) {
-      console.error('Failed to update KYC:', error);
-      this.notification.error('Update Failed', 'Could not update KYC status.');
+      this.notification.error('Update Failed', getErrorMessage(error, 'Could not update KYC status.'));
     }
   }
 
@@ -199,8 +198,7 @@ export class AdminUsersComponent implements OnInit {
       this.userToDelete = null;
       await this.loadUsers();
     } catch (error) {
-      console.error('Failed to delete user:', error);
-      this.notification.error('Delete Failed', 'Could not delete user.');
+      this.notification.error('Delete Failed', getErrorMessage(error, 'Could not delete user.'));
     }
   }
 
@@ -218,8 +216,7 @@ export class AdminUsersComponent implements OnInit {
       this.totalPages = res.totalPages;
       this.total = res.total;
     } catch (error) {
-      console.error('Failed to load users:', error);
-      this.notification.error('Load Failed', 'Could not load users.');
+      this.notification.error('Load Failed', getErrorMessage(error, 'Could not load users.'));
     } finally {
       this.loading = false;
     }

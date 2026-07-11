@@ -10,6 +10,7 @@ import { StatusBadgeComponent } from '../../../shared/components/status-badge/st
 import { ConfirmDialogComponent } from '../../../shared/components/confirm-dialog/confirm-dialog';
 import { OracleSubmission } from '../../../core/models/oracle.model';
 import { LucideAngularModule, Plus, Trash2, HardDrive, RefreshCw } from 'lucide-angular';
+import { LoggingService } from '../../../core/services/logging.service';
 
 interface OracleEntry {
   address: string;
@@ -228,6 +229,7 @@ export class AdminOraclesComponent implements OnInit {
   constructor(
     private oracleService: OracleService,
     private notification: NotificationService,
+    private loggingService: LoggingService,
   ) {}
 
   async ngOnInit(): Promise<void> {
@@ -296,7 +298,7 @@ export class AdminOraclesComponent implements OnInit {
       this.totalPages = res.totalPages;
       this.total = res.total;
     } catch (error) {
-      console.error('Failed to load submissions:', error);
+      this.loggingService.error('Failed to load submissions:', error);
     } finally {
       this.submissionsLoading = false;
     }
@@ -322,7 +324,7 @@ export class AdminOraclesComponent implements OnInit {
         };
       });
     } catch (error) {
-      console.error('Failed to build oracle list:', error);
+      this.loggingService.error('Failed to build oracle list:', error);
       this.oracles = [];
     }
   }
