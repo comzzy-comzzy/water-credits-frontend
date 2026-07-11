@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios';
 import { environment } from '../../../environments/environment';
 import { STORAGE_KEYS } from '../constants/app.constants';
 
@@ -41,8 +41,8 @@ export class ApiService {
     );
   }
 
-  private handleError(error: any) {
-    const message = error.response?.data?.message || 'An unexpected error occurred';
+  private handleError(error: AxiosError): { message: string; [key: string]: unknown } {
+    const message = (error.response?.data as { message?: string })?.message || 'An unexpected error occurred';
     return { ...error, message };
   }
 

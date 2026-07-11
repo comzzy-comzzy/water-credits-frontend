@@ -130,9 +130,9 @@ export interface ColumnDef {
     </div>
   `,
 })
-export class DataTableComponent {
+export class DataTableComponent<T extends Record<string, unknown> = Record<string, unknown>> {
   @Input() columns: ColumnDef[] = [];
-  @Input() data: any[] = [];
+  @Input() data: T[] = [];
   @Input() loading = false;
   @Input() emptyTitle = 'No data';
   @Input() emptyMessage = '';
@@ -143,20 +143,20 @@ export class DataTableComponent {
   @Input() showPagination = true;
   @Input() sortColumn = '';
   @Input() sortDirection: 'ASC' | 'DESC' = 'ASC';
-  @Output() rowClick = new EventEmitter<any>();
+  @Output() rowClick = new EventEmitter<T>();
   @Output() sort = new EventEmitter<string>();
   @Output() pageChange = new EventEmitter<number>();
-  @ContentChild('row') rowTemplate?: TemplateRef<any>;
+  @ContentChild('row') rowTemplate?: TemplateRef<{ $implicit: T; column: ColumnDef }>;
 
   protected readonly ArrowUpIcon = ArrowUp;
   protected readonly ArrowDownIcon = ArrowDown;
   protected readonly ChevronsUpDownIcon = ChevronsUpDown;
 
-  getNestedValue(obj: any, path: string): any {
-    return path.split('.').reduce((current, key) => current?.[key], obj);
+  getNestedValue(obj: Record<string, unknown>, path: string): unknown {
+    return path.split('.').reduce((current: Record<string, unknown> | undefined, key) => current?.[key] as Record<string, unknown> | undefined, obj);
   }
 
-  trackByRow(index: number, row: Record<string, unknown>): string {
-    return row?.['id'] as string ?? String(index);
+  trackByRow(index: number, row: T): string {
+    return (row as Record<string, unknown>)?.['id'] as string ?? String(index);
   }
 }
