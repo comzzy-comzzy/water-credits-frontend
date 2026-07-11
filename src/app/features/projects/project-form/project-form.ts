@@ -205,8 +205,9 @@ export class ProjectFormComponent implements OnInit {
       this.store.dispatch(ProjectsActions.createProjectSuccess({ project }));
       this.notificationService.success('Project created', `${project.name} has been registered successfully`);
       this.router.navigate(['/projects', project.id]);
-    } catch (error: any) {
-      this.notificationService.error('Failed to create project', error.message || 'An error occurred');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred';
+      this.notificationService.error('Failed to create project', message);
     } finally {
       this.saving = false;
     }

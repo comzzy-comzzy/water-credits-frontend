@@ -379,10 +379,11 @@ export class RetirementFormComponent implements OnInit {
         'Your credits have been retired successfully',
       );
       this.router.navigate(['/retirement', result.id, 'certificate']);
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred while processing your retirement';
       this.notificationService.error(
         'Retirement failed',
-        error.message || 'An error occurred while processing your retirement',
+        message,
       );
     } finally {
       this.saving = false;

@@ -286,8 +286,9 @@ export class ProposalDetailComponent implements OnInit {
       await this.governanceService.vote(this.proposal.id, vote);
       this.notification.success('Vote cast', `You voted ${vote} on "${this.proposal.title}"`);
       await this.loadProposal(this.proposal.id);
-    } catch (err: any) {
-      this.notification.error('Vote failed', err?.message || 'Unable to cast vote');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to cast vote';
+      this.notification.error('Vote failed', message);
     } finally {
       this.voting = false;
     }
@@ -300,8 +301,9 @@ export class ProposalDetailComponent implements OnInit {
       await this.governanceService.execute(this.proposal.id);
       this.notification.success('Proposal executed', `"${this.proposal.title}" has been executed`);
       await this.loadProposal(this.proposal.id);
-    } catch (err: any) {
-      this.notification.error('Execution failed', err?.message || 'Unable to execute proposal');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unable to execute proposal';
+      this.notification.error('Execution failed', message);
     } finally {
       this.executing = false;
     }

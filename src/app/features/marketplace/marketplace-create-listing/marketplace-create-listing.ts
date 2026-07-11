@@ -196,8 +196,9 @@ export class MarketplaceCreateListingComponent implements OnInit {
       });
       this.notificationService.success('Success', 'Listing created successfully');
       this.router.navigate(['/marketplace']);
-    } catch (err: any) {
-      this.notificationService.error('Error', err?.message || 'Failed to create listing');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to create listing';
+      this.notificationService.error('Error', message);
     } finally {
       this.submitting = false;
     }

@@ -207,8 +207,9 @@ export class SensorConfigComponent implements OnInit {
   private async loadDevices(): Promise<void> {
     try {
       this.devices = await this.sensorsService.getDevices();
-    } catch (error: any) {
-      this.notificationService.error('Failed to load devices', error.message || 'Could not fetch device list');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Could not fetch device list';
+      this.notificationService.error('Failed to load devices', message);
     } finally {
       this.devicesLoading = false;
     }
@@ -245,8 +246,9 @@ export class SensorConfigComponent implements OnInit {
       this.notificationService.success('Device registered', `${device.deviceId} has been registered successfully`);
       this.showRegisterForm = false;
       this.newDevice = { deviceId: '', manufacturer: '', model: '', publicKey: '', parameters: [] };
-    } catch (error: any) {
-      this.notificationService.error('Failed to register device', error.message || 'An error occurred');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred';
+      this.notificationService.error('Failed to register device', message);
     } finally {
       this.saving = false;
     }

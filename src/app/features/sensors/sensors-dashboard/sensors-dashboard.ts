@@ -234,8 +234,9 @@ export class SensorsDashboardComponent implements OnInit, OnDestroy {
         this.sensorsService.getDevices(),
       ]);
       this.store.dispatch(SensorsActions.loadDevicesSuccess({ devices }));
-    } catch (error: any) {
-      this.store.dispatch(SensorsActions.loadDevicesFailure({ error: error.message || 'Failed to load devices' }));
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to load devices';
+      this.store.dispatch(SensorsActions.loadDevicesFailure({ error: message }));
     } finally {
       this.loading = false;
     }

@@ -312,10 +312,11 @@ export class ProposalFormComponent implements OnInit {
         'Your proposal has been submitted successfully',
       );
       this.router.navigate(['/governance', proposal.id]);
-    } catch (err: any) {
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An unexpected error occurred';
       this.notification.error(
         'Failed to create proposal',
-        err?.message || 'An unexpected error occurred',
+        message,
       );
     } finally {
       this.isSubmitting = false;

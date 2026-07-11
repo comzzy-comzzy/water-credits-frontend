@@ -352,10 +352,11 @@ export class FarmerParcelsComponent implements OnInit, OnDestroy {
         baselineEnd: '',
       };
       this.selectedCrop = '';
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'An error occurred';
       this.notificationService.error(
         'Failed to register parcel',
-        error.message || 'An error occurred',
+        message,
       );
     } finally {
       this.saving = false;

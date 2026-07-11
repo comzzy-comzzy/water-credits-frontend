@@ -120,10 +120,11 @@ export class RegisterComponent {
         this.notificationService.success('Account created', 'Welcome to Water Credits!');
         this.router.navigateByUrl('/dashboard');
       }
-    } catch (error: any) {
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Could not create account';
       this.notificationService.error(
         'Registration failed',
-        error.message || 'Could not create account',
+        message,
       );
     } finally {
       this.loading = false;
