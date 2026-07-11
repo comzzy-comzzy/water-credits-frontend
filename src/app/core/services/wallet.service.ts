@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import freighter from '@stellar/freighter-api';
 import { BehaviorSubject } from 'rxjs';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,7 +10,7 @@ export class WalletService {
   private publicKeySubject = new BehaviorSubject<string | null>(null);
   public publicKey$ = this.publicKeySubject.asObservable();
 
-  constructor() {}
+  constructor(private loggingService: LoggingService) {}
 
   async checkConnection(): Promise<boolean> {
     try {
@@ -22,7 +23,7 @@ export class WalletService {
         }
       }
     } catch (e) {
-      console.error('Check connection failed', e);
+      this.loggingService.error('Check connection failed', e);
     }
     return false;
   }
@@ -36,7 +37,7 @@ export class WalletService {
       }
       return null;
     } catch (error) {
-      console.error('Failed to connect to Freighter:', error);
+      this.loggingService.error('Failed to connect to Freighter:', error);
       return null;
     }
   }
@@ -59,7 +60,7 @@ export class WalletService {
       }
       return null;
     } catch (error) {
-      console.error('Failed to sign challenge:', error);
+      this.loggingService.error('Failed to sign challenge:', error);
       return null;
     }
   }
@@ -74,7 +75,7 @@ export class WalletService {
       }
       return null;
     } catch (error) {
-      console.error('Failed to sign transaction:', error);
+      this.loggingService.error('Failed to sign transaction:', error);
       return null;
     }
   }

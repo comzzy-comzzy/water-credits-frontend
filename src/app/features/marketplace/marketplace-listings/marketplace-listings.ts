@@ -226,6 +226,6 @@ export class MarketplaceListingsComponent implements OnInit {
   }
 
   buyListing(listing: MarketplaceListing): void {
-    console.log('Buy listing:', listing.id);
+    this.router.navigate(['/marketplace', listing.id, 'buy']);
   }
 }

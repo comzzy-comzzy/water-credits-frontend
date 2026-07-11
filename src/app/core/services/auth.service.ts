@@ -4,6 +4,7 @@ import { WalletService } from './wallet.service';
 import { BehaviorSubject } from 'rxjs';
 import { User } from '../models/user.model';
 import { STORAGE_KEYS } from '../constants/app.constants';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class AuthService {
   constructor(
     private apiService: ApiService,
     private walletService: WalletService,
+    private loggingService: LoggingService,
   ) {
     const savedToken = localStorage.getItem(STORAGE_KEYS.AUTH_TOKEN);
     if (savedToken) {
@@ -39,7 +41,7 @@ export class AuthService {
       this.userSubject.next(user);
       return true;
     } catch (error) {
-      console.error('Login failed:', error);
+      this.loggingService.error('Login failed:', error);
       return false;
     }
   }

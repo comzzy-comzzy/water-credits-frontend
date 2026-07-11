@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../../environments/environment';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { LoggingService } from './logging.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +12,7 @@ export class WebsocketService {
   private connectedSubject = new BehaviorSubject<boolean>(false);
   public connected$ = this.connectedSubject.asObservable();
 
-  constructor() {}
+  constructor(private loggingService: LoggingService) {}
 
   connect(token: string, userId: string): void {
     if (this.socket) {
@@ -27,16 +28,16 @@ export class WebsocketService {
 
     this.socket.on('connect', () => {
       this.connectedSubject.next(true);
-      console.log('Connected to WebSocket');
+      this.loggingService.info('Connected to WebSocket');
     });
 
     this.socket.on('disconnect', () => {
       this.connectedSubject.next(false);
-      console.log('Disconnected from WebSocket');
+      this.loggingService.info('Disconnected from WebSocket');
     });
 
     this.socket.on('connect_error', (error) => {
-      console.error('WebSocket connection error:', error);
+      this.loggingService.error('WebSocket connection error:', error);
     });
   }
 
