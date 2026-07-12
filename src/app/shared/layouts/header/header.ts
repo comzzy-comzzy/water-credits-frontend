@@ -1,13 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { AsyncPipe } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { WalletConnectComponent } from '../../components/wallet-connect/wallet-connect';
 import { WalletService } from '../../../core/services/wallet.service';
 import { AuthService } from '../../../core/services/auth.service';
 import { AppState } from '../../../core/store/app.state';
 import { LucideAngularModule, Droplets, Bell, Sun, Moon, Menu } from 'lucide-angular';
-import { toggleSidebar } from '../../../core/store/ui/ui.actions';
+import { toggleSidebar, setDarkMode } from '../../../core/store/ui/ui.actions';
+import { selectIsDarkMode } from '../../../core/store/ui/ui.selectors';
 
 @Component({
   selector: 'app-header',
@@ -45,7 +47,7 @@ import { toggleSidebar } from '../../../core/store/ui/ui.actions';
     </header>
   `
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit, OnDestroy {
   protected walletPublicKey$;
   protected isDarkMode = true;
   protected readonly MenuIcon = Menu;
@@ -53,6 +55,7 @@ export class HeaderComponent {
   protected readonly BellIcon = Bell;
   protected readonly SunIcon = Sun;
   protected readonly MoonIcon = Moon;
+  private destroy$ = new Subject<void>();
 
   constructor(
     private store: Store<AppState>,
@@ -60,6 +63,20 @@ export class HeaderComponent {
     private authService: AuthService,
   ) {
     this.walletPublicKey$ = this.walletService.publicKey$;
+  }
+
+  ngOnInit(): void {
+    this.store.select(selectIsDarkMode).pipe(takeUntil(this.destroy$)).subscribe({
+      next: (dark) => {
+        this.isDarkMode = dark;
+        document.documentElement.classList.toggle('dark', dark);
+      },
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   toggleSidebar(): void {
@@ -78,7 +95,6 @@ export class HeaderComponent {
   }
 
   toggleDarkMode(): void {
-    this.isDarkMode = !this.isDarkMode;
-    document.documentElement.classList.toggle('dark', this.isDarkMode);
+    this.store.dispatch(setDarkMode({ isDark: !this.isDarkMode }));
   }
 }

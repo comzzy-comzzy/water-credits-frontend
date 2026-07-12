@@ -1,10 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Store } from '@ngrx/store';
 import { NgIf } from '@angular/common';
+import { Subject, takeUntil } from 'rxjs';
 import { AppState } from '../../../core/store/app.state';
 import { LucideAngularModule, LayoutDashboard, Leaf, Radio, Coins, ShoppingCart, ArrowLeftRight, Sprout, Vote, ShieldCheck, ChevronLeft } from 'lucide-angular';
 import { toggleSidebar } from '../../../core/store/ui/ui.actions';
+import { selectSidebarOpen } from '../../../core/store/ui/ui.selectors';
 import { NavItem } from '../../../core/models/shared-interfaces.model';
 
 @Component({
@@ -28,7 +30,7 @@ import { NavItem } from '../../../core/models/shared-interfaces.model';
     </aside>
   `
 })
-export class SidebarComponent {
+export class SidebarComponent implements OnInit, OnDestroy {
   protected navItems: NavItem[] = [
     { label: 'Dashboard', route: '/dashboard', icon: LayoutDashboard },
     { label: 'Projects', route: '/projects', icon: Leaf },
@@ -43,14 +45,21 @@ export class SidebarComponent {
 
   protected isOpen = true;
   protected readonly ChevronLeftIcon = ChevronLeft;
+  private destroy$ = new Subject<void>();
 
-  constructor(private store: Store<AppState>) {
-    this.store.select(state => state.ui.sidebarOpen).subscribe({
+  constructor(private store: Store<AppState>) {}
+
+  ngOnInit(): void {
+    this.store.select(selectSidebarOpen).pipe(takeUntil(this.destroy$)).subscribe({
       next: (open) => {
         this.isOpen = open;
       },
-      error: () => {},
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   toggle(): void {
