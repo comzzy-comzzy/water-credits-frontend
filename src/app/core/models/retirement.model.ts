@@ -29,3 +29,9 @@ export interface RetirementCertificate {
   certificateIpfsUri: string;
   retireeAddress: string;
 }
+
+export interface RecentRetirement {
+  projectName: string;
+  amount: string;
+  retiredAt: string;
+}

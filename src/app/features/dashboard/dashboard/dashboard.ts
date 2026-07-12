@@ -6,6 +6,7 @@ import { DateFormatPipe } from '../../../shared/pipes/date-format.pipe';
 import { AnalyticsService } from '../../../core/services/analytics.service';
 import { WebsocketService } from '../../../core/services/websocket.service';
 import { AnalyticsOverview, CreditsOverTimePoint } from '../../../core/models/analytics.model';
+import { RecentRetirement } from '../../../core/models/retirement.model';
 import { LucideAngularModule, Droplets, Leaf, Coins, TrendingUp, Activity, AlertTriangle } from 'lucide-angular';
 import { LoggingService } from '../../../core/services/logging.service';
 
@@ -123,7 +124,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   protected loading = true;
   protected overview: AnalyticsOverview | null = null;
   protected creditsOverTime: CreditsOverTimePoint[] = [];
-  protected recentRetirements: any[] = [];
+  protected recentRetirements: RecentRetirement[] = [];
   protected wsConnected = false;
   private destroy$ = new Subject<void>();
 
@@ -171,11 +172,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   getMintedHeight(value: number): number {
-    const max = Math.max(...this.creditsOverTime.map(p => Math.max(p.minted, p.retired)), 1);
-    return (value / max) * 200;
+    return this.getChartBarHeight(value);
   }
 
   getRetiredHeight(value: number): number {
+    return this.getChartBarHeight(value);
+  }
+
+  private getChartBarHeight(value: number): number {
     const max = Math.max(...this.creditsOverTime.map(p => Math.max(p.minted, p.retired)), 1);
     return (value / max) * 200;
   }
